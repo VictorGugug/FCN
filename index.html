@@ -29,32 +29,89 @@
         text-shadow: 0 0 10px #7b2cbf;
     }
 
-    /* Reproductor minimalista */
-    .player {
+    /* Reproductor simplificado */
+    .player-container {
         position: fixed;
         top: 10px;
         left: 10px;
+        z-index: 1000;
+    }
+
+    .player {
         background: rgba(20, 20, 20, 0.95);
-        padding: 10px;
         border-radius: 12px;
         box-shadow: 0 0 12px #7b2cbf;
         border: 2px solid #ffcc00;
-        width: 220px;
-        font-size: 0.9em;
+        padding: 10px;
+        width: 60px; /* Ancho inicial contraído */
+        overflow: hidden;
+        transition: width 0.3s ease-in-out;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
     }
 
-    .player img {
-        width: 100%;
-        height: auto;
+    .player.expanded {
+        width: 220px; /* Ancho expandido */
+    }
+
+    .player-thumbnail {
+        width: 40px;
+        height: 40px;
         border-radius: 8px;
         border: 2px solid #ffcc00;
+        transition: border-radius 0.3s ease-in-out;
+    }
+
+    .player.expanded .player-thumbnail {
+        width: 100%;
+        height: auto;
         margin-bottom: 5px;
+        border-radius: 8px;
+    }
+
+    .song-details {
+        margin-left: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    .player.expanded .song-details {
+        opacity: 1;
+        visibility: visible;
+        margin-left: 0;
+    }
+
+    .song-details h3 {
+        margin: 0;
+        font-size: 1em;
+        color: #fff200;
+    }
+
+    .song-details p {
+        margin: 0;
+        font-size: 0.8em;
+        color: #ccc;
+    }
+    
+    .player-content {
+        display: none;
+    }
+
+    .player.expanded .player-content {
+        display: block;
     }
 
     .controls {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-top: 10px;
     }
 
     .player button {
@@ -126,27 +183,35 @@
     <h1>FELI CUMPLE NEEEEEILLLLLLL</h1>
 
     <p>
-     Ojala cumplas mas años para seguir jugando pressure JADJADHJD, cuidate mushossssssssss.
+        Ojala cumplas mas años para seguir jugando pressure JADJADHJD, cuidate mushossssssssss.
     </p>
 
-    <!-- Reproductor minimalista -->
-    <div class="player">
-        <img src="VT.jpeg" alt="Portada de la canción">
-        <audio id="audio" src="FWY.mp3"></audio>
-        <div class="progress-container">
-            <div class="progress" id="progress"></div>
-        </div>
-        <div class="time">
-            <span id="currentTime">0:00</span>
-            <span id="duration">0:00</span>
-        </div>
-        <div class="controls">
-            <button onclick="playAudio()">▶</button>
-            <button onclick="pauseAudio()">⏸</button>
+    <div class="player-container">
+        <div class="player" id="audio-player" onclick="togglePlayer()">
+            <img class="player-thumbnail" src="VT.jpeg" alt="Portada de la canción">
+            
+            <div class="song-details">
+                <h3>VT</h3>
+                <p>For What You Give</p>
+            </div>
+            
+            <div class="player-content">
+                <audio id="audio" src="FWY.mp3"></audio>
+                <div class="progress-container">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="time">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="controls">
+                    <button id="playBtn" onclick="event.stopPropagation(); playAudio()">▶</button>
+                    <button id="pauseBtn" style="display: none;" onclick="event.stopPropagation(); pauseAudio()">⏸</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Imágenes -->
     <div class="container">
         <img src="fotoz1.jpg" alt="Foto lateral izquierda" class="side-img">
         <img src="fotz2.jpg" alt="Foto lateral derecha" class="side-img">
@@ -156,12 +221,28 @@
 
 <script>
     const audio = document.getElementById('audio');
+    const player = document.getElementById('audio-player');
     const progress = document.getElementById('progress');
     const currentTimeEl = document.getElementById('currentTime');
     const durationEl = document.getElementById('duration');
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    
+    function playAudio() {
+        audio.play();
+        playBtn.style.display = 'none';
+        pauseBtn.style.display = 'block';
+    }
 
-    function playAudio() { audio.play(); }
-    function pauseAudio() { audio.pause(); }
+    function pauseAudio() {
+        audio.pause();
+        playBtn.style.display = 'block';
+        pauseBtn.style.display = 'none';
+    }
+
+    function togglePlayer() {
+        player.classList.toggle('expanded');
+    }
 
     audio.addEventListener('loadedmetadata', () => {
         durationEl.textContent = formatTime(audio.duration);
@@ -171,6 +252,11 @@
         const percent = (audio.currentTime / audio.duration) * 100;
         progress.style.width = percent + '%';
         currentTimeEl.textContent = formatTime(audio.currentTime);
+    });
+
+    audio.addEventListener('ended', () => {
+        playBtn.style.display = 'block';
+        pauseBtn.style.display = 'none';
     });
 
     function formatTime(seconds) {
