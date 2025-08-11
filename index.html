@@ -29,67 +29,70 @@
         text-shadow: 0 0 10px #7b2cbf;
     }
 
-    /* Estilo del reproductor */
+    /* Reproductor minimalista */
     .player {
-        display: inline-block;
-        background: #1a1a1a;
-        padding: 15px;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(20, 20, 20, 0.95);
+        padding: 10px;
         border-radius: 12px;
-        box-shadow: 0 0 15px #7b2cbf;
+        box-shadow: 0 0 12px #7b2cbf;
         border: 2px solid #ffcc00;
-        margin-bottom: 20px;
+        width: 220px;
+        font-size: 0.9em;
     }
 
     .player img {
-        width: 80px;
-        height: 80px;
-        border-radius: 10px;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
         border: 2px solid #ffcc00;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .player button {
-        background: #ffcc00;
-        color: #000;
+        background: none;
+        color: #ffcc00;
         border: none;
-        padding: 8px 15px;
-        border-radius: 8px;
-        font-family: 'Orbitron', sans-serif;
+        font-size: 1.2em;
         cursor: pointer;
-        margin: 5px;
-        font-size: 1em;
-        box-shadow: 0 0 8px #ffcc00;
         transition: transform 0.1s;
     }
 
     .player button:hover {
-        transform: scale(1.1);
-        background: #fff200;
+        transform: scale(1.2);
+        color: #fff200;
     }
 
     /* Barra de progreso */
     .progress-container {
         width: 100%;
         background: #333;
-        height: 8px;
+        height: 6px;
         border-radius: 5px;
         overflow: hidden;
-        margin: 10px 0;
-        box-shadow: 0 0 8px #ffcc00;
+        margin: 5px 0;
     }
 
     .progress {
-        height: 8px;
+        height: 6px;
         background: linear-gradient(90deg, #ffcc00, #7b2cbf, #ffcc00);
         width: 0%;
         transition: width 0.1s linear;
-        animation: pulse 1s infinite;
     }
 
-    @keyframes pulse {
-        0% { filter: brightness(1); }
-        50% { filter: brightness(1.5); }
-        100% { filter: brightness(1); }
+    .time {
+        font-size: 0.8em;
+        color: #ccc;
+        display: flex;
+        justify-content: space-between;
     }
 
     /* Imágenes */
@@ -126,16 +129,21 @@
      Ojala cumplas mas años para seguir jugando pressure JADJADHJD, cuidate mushossssssssss.
     </p>
 
-    <!-- Reproductor personalizado -->
+    <!-- Reproductor minimalista -->
     <div class="player">
         <img src="VT.jpeg" alt="Portada de la canción">
-        <br>
         <audio id="audio" src="FWY.mp3"></audio>
         <div class="progress-container">
             <div class="progress" id="progress"></div>
         </div>
-        <button onclick="playAudio()">▶ Play</button>
-        <button onclick="pauseAudio()">⏸ Pause</button>
+        <div class="time">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+        <div class="controls">
+            <button onclick="playAudio()">▶</button>
+            <button onclick="pauseAudio()">⏸</button>
+        </div>
     </div>
 
     <!-- Imágenes -->
@@ -149,14 +157,27 @@
 <script>
     const audio = document.getElementById('audio');
     const progress = document.getElementById('progress');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
 
     function playAudio() { audio.play(); }
     function pauseAudio() { audio.pause(); }
 
+    audio.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(audio.duration);
+    });
+
     audio.addEventListener('timeupdate', () => {
         const percent = (audio.currentTime / audio.duration) * 100;
         progress.style.width = percent + '%';
+        currentTimeEl.textContent = formatTime(audio.currentTime);
     });
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    }
 </script>
 
 </body>
