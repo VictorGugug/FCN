@@ -315,7 +315,6 @@
     const durationEl = document.getElementById('duration');
     const playBtn = document.getElementById('playBtn');
     const pauseBtn = document.getElementById('pauseBtn');
-    const player = document.getElementById('player');
     const playlistEl = document.getElementById('playlist');
     
     // Lista de canciones
@@ -351,7 +350,7 @@
             artist: 'AJ DiSpirito',
             src: 'mus/Ancient Aliens.mp3',
             image: 'mus/SP.jpeg',
-            easterEgg: 'mus/NC.jpeg' // Se añade el mismo easter egg para esta canción
+            easterEgg: 'mus/NC.jpeg'
         }
     ];
 
@@ -365,6 +364,10 @@
         // Lógica del easter egg
         if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) {
             imageSrc = song.easterEgg;
+        } else if (song.title === 'The HuMaN Gala') {
+            imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image;
+        } else {
+            imageSrc = song.image;
         }
 
         playerThumbnail.src = imageSrc;
@@ -374,15 +377,19 @@
     }
 
     function playAudio() {
-        audio.play();
-        playBtn.style.display = 'none';
-        pauseBtn.style.display = 'block';
+        if (audio.paused) {
+            audio.play();
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'block';
+        }
     }
 
     function pauseAudio() {
-        audio.pause();
-        playBtn.style.display = 'block';
-        pauseBtn.style.display = 'none';
+        if (!audio.paused) {
+            audio.pause();
+            playBtn.style.display = 'block';
+            pauseBtn.style.display = 'none';
+        }
     }
     
     function skipBack(seconds) {
@@ -395,9 +402,7 @@
     
     function createPlaylist() {
         playlistEl.innerHTML = '';
-        
-        // Decidir si el easter egg de "No Eyed Girl/Ancient Aliens" estará activo para esta sesión
-        noEyedGirlEasterEggActive = Math.floor(Math.random() * 10) === 0;
+        noEyedGirlEasterEggActive = Math.random() < 0.1;
 
         playlist.forEach((song, index) => {
             const songItem = document.createElement('div');
@@ -405,12 +410,12 @@
             songItem.dataset.index = index;
 
             let imageSrc = song.image;
-            // Si es una de las canciones con easter egg y está activo, usar la imagen alternativa
             if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) {
                 imageSrc = song.easterEgg;
             } else if (song.title === 'The HuMaN Gala') {
-                // Mantener el easter egg de "The HuMaN Gala" independiente
-                imageSrc = Math.floor(Math.random() * 10) === 0 ? song.easterEgg : song.image;
+                imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image;
+            } else {
+                imageSrc = song.image;
             }
 
             songItem.innerHTML = `
@@ -428,7 +433,6 @@
             playlistEl.appendChild(songItem);
         });
 
-        // Añadir la opción WIP
         const wipItem = document.createElement('div');
         wipItem.classList.add('wip-item');
         wipItem.innerHTML = 'Añadir música (WIP)';
