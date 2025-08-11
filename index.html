@@ -29,31 +29,29 @@
         text-shadow: 0 0 10px #7b2cbf;
     }
 
-    /* Reproductor simplificado */
-    .player-container {
+    /* Reproductor estilo Spotify */
+    .player {
         position: fixed;
         top: 10px;
         left: 10px;
         z-index: 1000;
-    }
-
-    .player {
         background: rgba(20, 20, 20, 0.95);
         border-radius: 12px;
         box-shadow: 0 0 12px #7b2cbf;
         border: 2px solid #ffcc00;
-        padding: 10px;
+        padding: 8px;
         width: 60px; /* Ancho inicial contraído */
-        overflow: hidden;
-        transition: width 0.3s ease-in-out;
-        cursor: pointer;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
+        gap: 10px;
+        transition: width 0.4s ease-in-out;
+        overflow: hidden;
+        white-space: nowrap;
     }
 
-    .player.expanded {
-        width: 220px; /* Ancho expandido */
+    /* Expansión del reproductor al pasar el cursor */
+    .player:hover {
+        width: 450px; /* Ancho expandido para Spotify */
     }
 
     .player-thumbnail {
@@ -61,60 +59,54 @@
         height: 40px;
         border-radius: 8px;
         border: 2px solid #ffcc00;
-        transition: border-radius 0.3s ease-in-out;
+        flex-shrink: 0;
     }
 
-    .player.expanded .player-thumbnail {
-        width: 100%;
-        height: auto;
-        margin-bottom: 5px;
-        border-radius: 8px;
-    }
-
-    .song-details {
-        margin-left: 10px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .player-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-grow: 1;
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        transition: opacity 0.4s ease-in-out;
     }
 
-    .player.expanded .song-details {
+    .player:hover .player-info {
         opacity: 1;
         visibility: visible;
-        margin-left: 0;
     }
 
-    .song-details h3 {
+    .player-info h3 {
         margin: 0;
         font-size: 1em;
         color: #fff200;
+        text-align: left;
     }
 
-    .song-details p {
+    .player-info p {
         margin: 0;
         font-size: 0.8em;
         color: #ccc;
-    }
-    
-    .player-content {
-        display: none;
+        text-align: left;
+        max-width: none;
     }
 
-    .player.expanded .player-content {
-        display: block;
-    }
-
-    .controls {
+    .player-controls {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-top: 10px;
+        gap: 8px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease-in-out;
     }
 
-    .player button {
+    .player:hover .player-controls {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .player-controls button {
         background: none;
         color: #ffcc00;
         border: none;
@@ -123,21 +115,34 @@
         transition: transform 0.1s;
     }
 
-    .player button:hover {
+    .player-controls button:hover {
         transform: scale(1.2);
         color: #fff200;
     }
 
-    /* Barra de progreso */
     .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease-in-out;
+    }
+
+    .player:hover .progress-container {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .progress-bar-wrapper {
         width: 100%;
         background: #333;
         height: 6px;
         border-radius: 5px;
         overflow: hidden;
-        margin: 5px 0;
     }
-
+    
     .progress {
         height: 6px;
         background: linear-gradient(90deg, #ffcc00, #7b2cbf, #ffcc00);
@@ -145,11 +150,9 @@
         transition: width 0.1s linear;
     }
 
-    .time {
+    .time-current, .time-duration {
         font-size: 0.8em;
         color: #ccc;
-        display: flex;
-        justify-content: space-between;
     }
 
     /* Imágenes */
@@ -186,29 +189,28 @@
         Ojala cumplas mas años para seguir jugando pressure JADJADHJD, cuidate mushossssssssss.
     </p>
 
-    <div class="player-container">
-        <div class="player" id="audio-player" onclick="togglePlayer()">
-            <img class="player-thumbnail" src="VT.jpeg" alt="Portada de la canción">
-            
-            <div class="song-details">
-                <h3>VT</h3>
-                <p>For What You Give</p>
+    <div class="player">
+        <audio id="audio" src="FWY.mp3"></audio>
+        <img class="player-thumbnail" src="VT.jpeg" alt="Portada de la canción">
+        
+        <div class="player-info">
+            <h3>VT</h3>
+            <p>For What You Give</p>
+        </div>
+        
+        <div class="player-controls">
+            <button onclick="skipBack(5)">«</button>
+            <button id="playBtn" onclick="playAudio()">▶</button>
+            <button id="pauseBtn" style="display: none;" onclick="pauseAudio()">⏸</button>
+            <button onclick="skipForward(5)">»</button>
+        </div>
+        
+        <div class="progress-container">
+            <span class="time-current" id="currentTime">0:00</span>
+            <div class="progress-bar-wrapper">
+                <div class="progress" id="progress"></div>
             </div>
-            
-            <div class="player-content">
-                <audio id="audio" src="FWY.mp3"></audio>
-                <div class="progress-container">
-                    <div class="progress" id="progress"></div>
-                </div>
-                <div class="time">
-                    <span id="currentTime">0:00</span>
-                    <span id="duration">0:00</span>
-                </div>
-                <div class="controls">
-                    <button id="playBtn" onclick="event.stopPropagation(); playAudio()">▶</button>
-                    <button id="pauseBtn" style="display: none;" onclick="event.stopPropagation(); pauseAudio()">⏸</button>
-                </div>
-            </div>
+            <span class="time-duration" id="duration">0:00</span>
         </div>
     </div>
 
@@ -221,13 +223,12 @@
 
 <script>
     const audio = document.getElementById('audio');
-    const player = document.getElementById('audio-player');
     const progress = document.getElementById('progress');
     const currentTimeEl = document.getElementById('currentTime');
     const durationEl = document.getElementById('duration');
     const playBtn = document.getElementById('playBtn');
     const pauseBtn = document.getElementById('pauseBtn');
-    
+
     function playAudio() {
         audio.play();
         playBtn.style.display = 'none';
@@ -239,9 +240,13 @@
         playBtn.style.display = 'block';
         pauseBtn.style.display = 'none';
     }
-
-    function togglePlayer() {
-        player.classList.toggle('expanded');
+    
+    function skipBack(seconds) {
+        audio.currentTime = Math.max(0, audio.currentTime - seconds);
+    }
+    
+    function skipForward(seconds) {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + seconds);
     }
 
     audio.addEventListener('loadedmetadata', () => {
@@ -260,6 +265,7 @@
     });
 
     function formatTime(seconds) {
+        if (isNaN(seconds)) return '0:00';
         const minutes = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
