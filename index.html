@@ -12,12 +12,21 @@
         background-color: #0a0a0a;
         color: #f0e6ff;
         text-align: center;
+        cursor: url('hellyeah.cur'), auto; /* ← Cursor personalizado mueejejjeje :D */
     }
 
     h1 {
         color: #ffcc00;
         text-shadow: 0 0 5px #fff200, 0 0 15px #ffcc00;
         margin: 20px 0 10px 0;
+    }
+
+    p {
+        max-width: 700px;
+        margin: 0 auto 20px auto;
+        font-size: 1.2em;
+        line-height: 1.5em;
+        text-shadow: 0 0 10px #7b2cbf;
     }
 
     /* Estilo del reproductor */
@@ -68,19 +77,11 @@
         padding: 20px;
     }
 
-    .side-img, .main-img {
+    .side-img {
         border-radius: 12px;
         border: 3px solid #ffcc00;
         box-shadow: 0 0 15px #ffcc00;
-    }
-
-    .side-img {
         width: 200px;
-        height: auto;
-    }
-
-    .main-img {
-        width: 350px;
         height: auto;
     }
 
@@ -96,20 +97,23 @@
 
     <h1>FELI CUMPLE NEEEEEILLLLLLL</h1>
 
-    <!-- Reproductor personalizado, hell yeah -->
+    <p>
+     Ojala cumplas mas años para seguir jugando pressure JADJADHJD, cuidate mushossssssssss.
+    </p>
+
+    <!-- Reproductor personalizado -->
     <div class="player">
-        <img src="portada.jpg" alt="Portada de la canción">
+        <img src="portada.png" alt="Portada de la canción">
         <br>
         <audio id="audio" src="musica.mp3"></audio>
         <button onclick="playAudio()">▶ Play</button>
         <button onclick="pauseAudio()">⏸ Pause</button>
     </div>
 
-    <!-- Imágenes -->
+    <!-- Imágenes abajo nzi -->
     <div class="container">
-        <img src="foto1.jpg" alt="Foto lateral izquierda" class="side-img">
-        <img src="principal.jpg" alt="Imagen principal" class="main-img">
-        <img src="foto2.jpg" alt="Foto lateral derecha" class="side-img">
+        <img src="fotoz1.jpg" alt="Foto lateral izquierda" class="side-img">
+        <img src="fotz2.jpg" alt="Foto lateral derecha" class="side-img">
     </div>
 
     <footer>I LOV YU N-IGGA</footer>
