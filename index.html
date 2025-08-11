@@ -12,7 +12,18 @@
         background-color: #0a0a0a;
         color: #f0e6ff;
         text-align: center;
+        /* Cursor predeterminado para el cuerpo de la página */
         cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212059'), auto;
+    }
+
+    h1, p, .player-info {
+        /* Cursor para áreas no interactivas */
+        cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212058'), auto;
+    }
+
+    /* Cursor para elementos clicables */
+    a, button, .player {
+        cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212064'), pointer;
     }
 
     h1 {
@@ -111,7 +122,7 @@
         color: #ffcc00;
         border: none;
         font-size: 1.2em;
-        cursor: pointer;
+        cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212064'), pointer;
         transition: transform 0.1s;
     }
 
@@ -194,8 +205,8 @@
         <img class="player-thumbnail" src="VT.jpeg" alt="Portada de la canción">
         
         <div class="player-info">
-            <h3>Falling with you</h3>
-            <p>AJ DiSpirito</p>
+            <h3>VT</h3>
+            <p>For What You Give</p>
         </div>
         
         <div class="player-controls">
