@@ -12,7 +12,7 @@
         background-color: #0a0a0a;
         color: #f0e6ff;
         text-align: center;
-        cursor: url('hellyeah.cur'), auto; /* ← Cursor personalizado mueejejjeje :D */
+        cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212059'), auto;
     }
 
     h1 {
@@ -67,6 +67,31 @@
         background: #fff200;
     }
 
+    /* Barra de progreso */
+    .progress-container {
+        width: 100%;
+        background: #333;
+        height: 8px;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 10px 0;
+        box-shadow: 0 0 8px #ffcc00;
+    }
+
+    .progress {
+        height: 8px;
+        background: linear-gradient(90deg, #ffcc00, #7b2cbf, #ffcc00);
+        width: 0%;
+        transition: width 0.1s linear;
+        animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+        0% { filter: brightness(1); }
+        50% { filter: brightness(1.5); }
+        100% { filter: brightness(1); }
+    }
+
     /* Imágenes */
     .container {
         display: flex;
@@ -106,11 +131,14 @@
         <img src="VT.jpeg" alt="Portada de la canción">
         <br>
         <audio id="audio" src="FWY.mp3"></audio>
+        <div class="progress-container">
+            <div class="progress" id="progress"></div>
+        </div>
         <button onclick="playAudio()">▶ Play</button>
         <button onclick="pauseAudio()">⏸ Pause</button>
     </div>
 
-    <!-- Imágenes abajo nzi -->
+    <!-- Imágenes -->
     <div class="container">
         <img src="fotoz1.jpg" alt="Foto lateral izquierda" class="side-img">
         <img src="fotz2.jpg" alt="Foto lateral derecha" class="side-img">
@@ -120,8 +148,15 @@
 
 <script>
     const audio = document.getElementById('audio');
+    const progress = document.getElementById('progress');
+
     function playAudio() { audio.play(); }
     function pauseAudio() { audio.pause(); }
+
+    audio.addEventListener('timeupdate', () => {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progress.style.width = percent + '%';
+    });
 </script>
 
 </body>
