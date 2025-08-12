@@ -94,11 +94,22 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.4s ease-in-out;
+            overflow: hidden; /* Oculta el desbordamiento del título largo */
+        }
+        
+        .player-info-text {
+            white-space: nowrap;
+            animation: scroll-text 10s linear infinite;
         }
 
         .player:hover .player-info {
             opacity: 1;
             visibility: visible;
+        }
+        
+        @keyframes scroll-text {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
         }
 
         .player-info h3 {
@@ -133,6 +144,29 @@
         #loopBtn.active {
             color: #fff200;
             border-bottom: 2px solid #fff200;
+        }
+
+        .player-controls button {
+            background: none;
+            border: none;
+            color: #f0e6ff;
+            font-size: 1.5em; /* Tamaño de los íconos */
+            padding: 4px;
+            transition: color 0.2s, transform 0.2s;
+            line-height: 1;
+        }
+
+        .player-controls button:hover {
+            color: #ffcc00;
+            transform: scale(1.1);
+        }
+
+        /* Estilo para los iconos SVG */
+        .player-controls button svg {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            fill: currentColor;
         }
 
         .progress-container {
@@ -257,6 +291,62 @@
             font-size: 0.8em;
             color: #aaa;
         }
+
+        /* Song Info Modal */
+        #song-info-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 10, 0.9);
+            border: 2px solid #ffcc00;
+            box-shadow: 0 0 20px #7b2cbf;
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 2000;
+            color: #f0e6ff;
+            text-align: left;
+            max-width: 400px;
+            width: 90%;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #song-info-modal h2 {
+            color: #fff200;
+            margin: 0;
+            border-bottom: 2px solid #7b2cbf;
+            padding-bottom: 10px;
+        }
+        
+        #song-info-modal p {
+            margin: 5px 0;
+            font-size: 1em;
+            text-align: left;
+        }
+
+        #song-info-modal p strong {
+            color: #ffcc00;
+        }
+
+        #close-info-modal {
+            background: #ffcc00;
+            color: #0a0a0a;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            align-self: center;
+            margin-top: 10px;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        #close-info-modal:hover {
+            background: #fff200;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -270,15 +360,27 @@
             <audio id="audio" src="mus/Falling with you.mp3"></audio>
             <img class="player-thumbnail" src="mus/Falling with you.jpeg" alt="Portada de la canción" id="player-thumbnail">
             <div class="player-info">
-                <h3 id="song-title">Falling with you</h3>
-                <p id="song-artist">AJ DiSpirito</p>
+                <div class="player-info-text">
+                    <h3 id="song-title">Falling with you</h3>
+                    <p id="song-artist">AJ DiSpirito</p>
+                </div>
             </div>
             <div class="player-controls">
-                <button onclick="skipBack(5)">«</button>
-                <button id="playBtn" onclick="playAudio()">▶</button>
-                <button id="pauseBtn" style="display: none;" onclick="pauseAudio()">⏸</button>
-                <button onclick="skipForward(5)">»</button>
-                <button id="loopBtn" onclick="toggleLoop()">🔁</button>
+                <button id="prevBtn" onclick="skipBack(5)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M400-80q-17 0-28.5-11.5T360-120v-720q0-17 11.5-28.5T400-880h480q17 0 28.5 11.5T920-840v720q0 17-11.5 28.5T880-80H400Zm37-160h416V-720H437l-63-149v149-560Zm6-520v520h410V-720h-410Z M400-80q-17 0-28.5-11.5T360-120v-720q0-17 11.5-28.5T400-880h480q17 0 28.5 11.5T920-840v720q0 17-11.5 28.5T880-80H400Z"/></svg>
+                </button>
+                <button id="playBtn" onclick="playAudio()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M320-200v-560l440 280-440 280Z"/></svg>
+                </button>
+                <button id="pauseBtn" style="display: none;" onclick="pauseAudio()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M520-200v-560h240v560H520ZM200-200v-560h240v560H200Z"/></svg>
+                </button>
+                <button id="nextBtn" onclick="skipForward(5)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-80q-17 0-28.5-11.5T160-120v-720q0-17 11.5-28.5T200-880h480q17 0 28.5 11.5T720-840v720q0 17-11.5 28.5T680-80H200Zm37-160h416V-720H237l-63-149v149-560Zm6-520v520h410V-720h-410Z M200-80q-17 0-28.5-11.5T160-120v-720q0-17 11.5-28.5T200-880h480q17 0 28.5 11.5T720-840v720q0 17-11.5 28.5T680-80H200Z"/></svg>
+                </button>
+                <button id="loopBtn" onclick="toggleLoop()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-240v-120H280q-50 0-85-35t-35-85q0-50 35-85t85-35h520v-80H280q-83 0-141.5 58.5T80-440q0 83 58.5 141.5T280-240h200Zm280-480v120H480q-83 0-141.5 58.5T280-440q0 83 58.5 141.5T480-240h200v80H480q-50 0-85-35t-35-85q0-50 35-85t85-35h520v-80H480Z"/></svg>
+                </button>
             </div>
             <div class="progress-container">
                 <span class="time-current" id="currentTime">0:00</span>
@@ -297,6 +399,14 @@
 
     <footer>I LOV YU N-IGGA</footer>
 
+    <div id="song-info-modal">
+        <h2 id="modal-song-title"></h2>
+        <p><strong>Artista:</strong> <span id="modal-song-artist"></span></p>
+        <p><strong>Álbum:</strong> <span id="modal-song-album"></span></p>
+        <p><strong>Descripción:</strong> <span id="modal-song-description"></span></p>
+        <button id="close-info-modal">Cerrar</button>
+    </div>
+
     <script>
         const audio = document.getElementById('audio');
         const playerThumbnail = document.getElementById('player-thumbnail');
@@ -311,17 +421,24 @@
         const playerWrapper = document.querySelector('.player-wrapper');
         const loopBtn = document.getElementById('loopBtn');
         const originalTitle = document.title;
+        let titleAnimationInterval;
+        const songInfoModal = document.getElementById('song-info-modal');
+        const closeInfoModalBtn = document.getElementById('close-info-modal');
 
         const playlist = [
             {
                 title: 'Falling with you',
                 artist: 'AJ DiSpirito',
+                album: 'Nivel 100',
+                description: 'Esta es una de las primeras canciones que agregaste, te la puse porque se que te gusta mucho, no es de las que mas escuchas pero se que es una de tus favoritas.',
                 src: 'mus/Falling with you.mp3',
                 image: 'mus/Falling with you.jpeg'
             },
             {
                 title: 'The HuMaN Gala',
                 artist: 'AJ DiSpirito',
+                album: 'Album 2',
+                description: 'Esta es una de las canciones que mas te gusta, me la pusiste un dia mientras jugabas y me encantó, por eso esta en esta lista.',
                 src: 'mus/The HuMaN Gala.mp3',
                 image: 'mus/The HuMaN Gala.jpeg',
                 easterEgg: 'mus/The HuMaN Galap.jpeg'
@@ -329,12 +446,16 @@
             {
                 title: 'Waltz in E-Major, Op. 15 "Moon Waltz"',
                 artist: 'Cojum Dip',
+                album: 'No recuerdo el album',
+                description: 'Esta es una de las canciones que te pasé un día, cuando me dijiste que te gustaba mucho la música clásica, esta la agregue porque me pareció muy bonita y porque se que te encantó, por eso la agregue.',
                 src: 'mus/Waltz in E-Major, Op. 15 ＂Moon Waltz＂.mp3',
                 image: 'mus/Waltz in E-Major, Op. 15 ＂Moon Waltz＂.jpeg'
             },
             {
                 title: 'No Eyed Girl',
                 artist: 'Lemon Demon',
+                album: 'Spirit Phone',
+                description: 'Esta es una de tus canciones favoritas de Lemon Demon, me la enseñaste un día y me encantó, por eso la agregué, para que la recuerdes con cariño.',
                 src: 'mus/No Eyed Girl.mp3',
                 image: 'mus/SP.jpeg',
                 easterEgg: 'mus/NC.jpeg'
@@ -342,6 +463,8 @@
             {
                 title: 'Ancient Aliens',
                 artist: 'Lemon Demon',
+                album: 'Spirit Phone',
+                description: 'Esta es otra de tus canciones favoritas de Lemon Demon, me la enseñaste un día y me encantó, por eso la agregué, para que la recuerdes con cariño.',
                 src: 'mus/Ancient Aliens.mp3',
                 image: 'mus/SP.jpeg',
                 easterEgg: 'mus/NC.jpeg'
@@ -349,15 +472,15 @@
         ];
 
         let currentSongIndex = 0;
-        let noEyedGirlEasterEggActive = false;
         let isLooping = false;
+        let isModalOpen = false;
 
         function loadSong(song) {
             audio.src = song.src;
             let imageSrc = song.image;
 
-            if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) {
-                imageSrc = song.easterEgg;
+            if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens')) {
+                imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image;
             } else if (song.title === 'The HuMaN Gala') {
                 imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image;
             } else {
@@ -369,6 +492,12 @@
             songArtist.textContent = song.artist;
             audio.load();
             updateMediaSession(song);
+        }
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadSong(playlist[currentSongIndex]);
+            playAudio();
         }
 
         function playAudio() {
@@ -386,6 +515,7 @@
                 playBtn.style.display = 'block';
                 pauseBtn.style.display = 'none';
                 document.title = originalTitle;
+                clearInterval(titleAnimationInterval);
             }
         }
         
@@ -410,22 +540,14 @@
         
         function createPlaylist() {
             playlistEl.innerHTML = '';
-            noEyedGirlEasterEggActive = Math.random() < 0.1;
-
+            
             playlist.forEach((song, index) => {
                 const songItem = document.createElement('div');
                 songItem.classList.add('song-item');
                 songItem.dataset.index = index;
 
                 let imageSrc = song.image;
-                if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) {
-                    imageSrc = song.easterEgg;
-                } else if (song.title === 'The HuMaN Gala') {
-                    imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image;
-                } else {
-                    imageSrc = song.image;
-                }
-
+                
                 songItem.innerHTML = `
                     <img class="song-item-thumbnail" src="${imageSrc}" alt="Portada">
                     <div class="song-item-info">
@@ -467,9 +589,7 @@
 
         audio.addEventListener('ended', () => {
             if (!isLooping) {
-                playBtn.style.display = 'block';
-                pauseBtn.style.display = 'none';
-                document.title = originalTitle;
+                nextSong();
             }
         });
         
@@ -481,9 +601,22 @@
         }
         
         function updateTitle() {
-            document.title = `▶️ ${playlist[currentSongIndex].title} | FELI CUMPLEEEE`;
+            const song = playlist[currentSongIndex];
+            const fullTitle = `${song.title} - ${song.artist}`;
+            document.title = `▶️ ${fullTitle}`;
+            
+            clearInterval(titleAnimationInterval);
+            const titleElement = document.querySelector('.player-info-text');
+            titleElement.textContent = fullTitle;
+            
+            if (fullTitle.length > 25) { 
+                titleAnimationInterval = setInterval(() => {
+                    const firstChar = titleElement.textContent.charAt(0);
+                    titleElement.textContent = titleElement.textContent.slice(1) + firstChar;
+                }, 200);
+            }
         }
-
+        
         function updateMediaSession(song) {
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
@@ -520,6 +653,33 @@
                 });
             }
         }
+        
+        function showSongInfo() {
+            const currentSong = playlist[currentSongIndex];
+            document.getElementById('modal-song-title').textContent = currentSong.title;
+            document.getElementById('modal-song-artist').textContent = currentSong.artist;
+            document.getElementById('modal-song-album').textContent = currentSong.album;
+            document.getElementById('modal-song-description').textContent = currentSong.description;
+            songInfoModal.style.display = 'flex';
+            isModalOpen = true;
+        }
+
+        function hideSongInfo() {
+            songInfoModal.style.display = 'none';
+            isModalOpen = false;
+        }
+
+        closeInfoModalBtn.addEventListener('click', hideSongInfo);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'F' || event.key === 'f') {
+                if (!isModalOpen) {
+                    showSongInfo();
+                } else {
+                    hideSongInfo();
+                }
+            }
+        });
 
         loadSong(playlist[currentSongIndex]);
         createPlaylist();
