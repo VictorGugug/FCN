@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FELI CUMPLEEEE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="yeah.icon" type="image/x-icon">
     <style>
         /* Cursors */
         body, h1, p, .player-info, .side-img, footer, .playlist {
@@ -128,19 +128,6 @@
         .player:hover .player-controls {
             opacity: 1;
             visibility: visible;
-        }
-
-        .player-controls button {
-            background: none;
-            color: #ffcc00;
-            border: none;
-            font-size: 1.2em;
-            transition: transform 0.1s;
-        }
-
-        .player-controls button:hover {
-            transform: scale(1.2);
-            color: #fff200;
         }
 
         #loopBtn.active {
@@ -526,10 +513,10 @@
                     skipForward(details.seekOffset || 10);
                 });
                 navigator.mediaSession.setActionHandler('previoustrack', () => {
-                    
+                    // Implementa la lógica para la canción anterior si es necesario
                 });
                 navigator.mediaSession.setActionHandler('nexttrack', () => {
-                    
+                    // Implementa la lógica para la siguiente canción si es necesario
                 });
             }
         }
