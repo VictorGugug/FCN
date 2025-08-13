@@ -1,570 +1,546 @@
-<!DOCTYPE html> 
- <html lang="es"> 
- <head> 
-     <meta charset="UTF-8"> 
-     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-     <title>FELI CUMPLEEEE</title> 
-     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"> 
-     <link rel="icon" href="mus/favicon1.png" type="image/png"> 
-     <style> 
-         /* Cursors */ 
-         body, h1, p, .player-info, .side-img, footer, .playlist { 
-             cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212058'), auto; 
-         } 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FELI CUMPLEEEE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="mus/favicon1.png" type="image/png">
+    <style>
+        /* Cursors */
+        body, h1, p, .player-info, .side-img, footer, .playlist {
+            cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212058'), auto;
+        }
+        .wip {
+            cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212058'), auto;
+        }
+        .player, button, a, .song-item {
+            cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212059'), pointer;
+        }
 
-         .wip { 
-             cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212058'), auto; 
-         } 
+        /* General styles */
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0a0a0a;
+            color: #f0e6ff;
+            text-align: center;
+        }
 
-         .player, button, a, .song-item, .footer-link, .github-link { /* Agregado .footer-link y .github-link */
-             cursor: url('http://www.rw-designer.com/cursor-extern.php?id=212059'), pointer; 
-         } 
+        h1 {
+            color: #ffcc00;
+            text-shadow: 0 0 5px #fff200, 0 0 15px #ffcc00;
+            margin: 20px 0 10px 0;
+        }
 
-         /* General styles */ 
-         body { 
-             margin: 0; 
-             font-family: 'Orbitron', sans-serif; 
-             background-color: #0d0118; /* Color de fondo oscuro, estilo Murder Drones */ 
-             color: #f0e6ff; 
-             text-align: center; 
-         } 
+        p {
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            font-size: 1.2em;
+            line-height: 1.5em;
+            text-shadow: 0 0 10px #7b2cbf;
+        }
 
-         h1 { 
-             color: #ffff33; /* Amarillo neón */
-             text-shadow: 0 0 10px #ffff33, 0 0 20px #8a2be2; /* Resplandor amarillo y violeta */
-             margin: 20px 0 10px 0; 
-             font-size: 3em; 
-             letter-spacing: 5px; 
-         } 
+        /* Player and playlist */
+        .player-wrapper {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
-         p { 
-             max-width: 700px; 
-             margin: 0 auto 20px auto; 
-             font-size: 1.2em; 
-             line-height: 1.5em; 
-             text-shadow: 0 0 5px #8a2be2; /* Sombra violeta */ 
-         } 
+        .player {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 0 12px #7b2cbf;
+            border: 2px solid #ffcc00;
+            padding: 8px;
+            width: 60px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: width 0.4s ease-in-out;
+            overflow: hidden;
+            white-space: nowrap;
+        }
 
-         /* Player and playlist */ 
-         .player-wrapper { 
-             position: fixed; 
-             top: 10px; 
-             left: 10px; 
-             z-index: 1000; 
-             display: flex; 
-             flex-direction: column; 
-             align-items: flex-start; 
-         } 
+        .player:hover {
+            width: 450px;
+        }
 
-         .player { 
-             background: rgba(20, 1, 30, 0.95); /* Fondo del reproductor */ 
-             border-radius: 12px; 
-             box-shadow: 0 0 15px #8a2be2; /* Sombra neón violeta */ 
-             border: 2px solid #ffff33; /* Borde amarillo neón */ 
-             padding: 8px; 
-             width: 60px; 
-             display: flex; 
-             align-items: center; 
-             gap: 10px; 
-             transition: width 0.4s ease-in-out; 
-             overflow: hidden; 
-             white-space: nowrap; 
-         } 
+        .player-thumbnail {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ffcc00;
+            flex-shrink: 0;
+            transition: transform 0.4s ease-in-out;
+        }
 
-         .player:hover { 
-             width: 450px; 
-         } 
+        .player:hover .player-thumbnail {
+            transform: rotate(360deg);
+        }
 
-         .player-thumbnail { 
-             width: 40px; 
-             height: 40px; 
-             border-radius: 50%; 
-             border: 2px solid #ffff33; 
-             flex-shrink: 0; 
-             transition: transform 0.4s ease-in-out; 
-         } 
+        .player-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-in-out;
+        }
 
-         .player:hover .player-thumbnail { 
-             transform: rotate(360deg); 
-         } 
+        .player:hover .player-info {
+            opacity: 1;
+            visibility: visible;
+        }
 
-         .player-info { 
-             display: flex; 
-             flex-direction: column; 
-             justify-content: center; 
-             flex-grow: 1; 
-             opacity: 0; 
-             visibility: hidden; 
-             transition: opacity 0.4s ease-in-out; 
-         } 
+        .player-info h3 {
+            margin: 0;
+            font-size: 1em;
+            color: #fff200;
+            text-align: left;
+        }
 
-         .player:hover .player-info { 
-             opacity: 1; 
-             visibility: visible; 
-         } 
+        .player-info p {
+            margin: 0;
+            font-size: 0.8em;
+            color: #ccc;
+            text-align: left;
+            max-width: none;
+        }
 
-         .player-info h3 { 
-             margin: 0; 
-             font-size: 1em; 
-             color: #ffff33; 
-             text-align: left; 
-             text-shadow: 0 0 5px #8a2be2; 
-         } 
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-in-out;
+        }
 
-         .player-info p { 
-             margin: 0; 
-             font-size: 0.8em; 
-             color: #ccc; 
-             text-align: left; 
-             max-width: none; 
-             text-shadow: none; 
-         } 
+        .player:hover .player-controls {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .player-controls button {
+            color: #ffcc00;
+            background: transparent;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+        }
 
-         .player-controls { 
-             display: flex; 
-             align-items: center; 
-             gap: 8px; 
-             opacity: 0; 
-             visibility: hidden; 
-             transition: opacity 0.4s ease-in-out; 
-         } 
+        #loopBtn {
+            font-size: 1.2em;
+        }
+        
+        #loopBtn.active {
+            color: #fff200;
+            border-bottom: 2px solid #fff200;
+        }
 
-         .player:hover .player-controls { 
-             opacity: 1; 
-             visibility: visible; 
-         } 
-          
-         .player-controls button { 
-             color: #ffff33; /* Color amarillo neón para los botones */ 
-             background: transparent; 
-             border: none; 
-             font-size: 1.5em; 
-             cursor: pointer; 
-             padding: 0; 
-             text-shadow: 0 0 5px #8a2be2; 
-         } 
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-in-out;
+        }
 
-         #loopBtn { 
-             font-size: 1.2em; /* Un poco más pequeño para que se vea mejor el símbolo */ 
-         } 
-          
-         #loopBtn.active { 
-             color: #ffff33; 
-             border-bottom: 2px solid #ffff33; 
-             text-shadow: 0 0 8px #ffff33; 
-         } 
+        .player:hover .progress-container {
+            opacity: 1;
+            visibility: visible;
+        }
 
-         .progress-container { 
-             display: flex; 
-             align-items: center; 
-             gap: 8px; 
-             width: 100%; 
-             opacity: 0; 
-             visibility: hidden; 
-             transition: opacity 0.4s ease-in-out; 
-         } 
+        .progress-bar-wrapper {
+            width: 100%;
+            background: #333;
+            height: 6px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
 
-         .player:hover .progress-container { 
-             opacity: 1; 
-             visibility: visible; 
-         } 
+        .progress {
+            height: 6px;
+            background: linear-gradient(90deg, #ffcc00, #7b2cbf, #ffcc00);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
 
-         .progress-bar-wrapper { 
-             width: 100%; 
-             background: #2a0b3f; /* Fondo de la barra de progreso más oscuro */ 
-             height: 6px; 
-             border-radius: 5px; 
-             overflow: hidden; 
-         } 
+        .time-current, .time-duration {
+            font-size: 0.8em;
+            color: #ccc;
+        }
 
-         .progress { 
-             height: 6px; 
-             background: linear-gradient(90deg, #ffff33, #8a2be2, #ffff33); /* Degradado neón */ 
-             width: 0%; 
-             transition: width 0.1s linear; 
-         } 
+        /* Playlist */
+        .playlist {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 0 12px #7b2cbf;
+            border: 2px solid #ffcc00;
+            margin-top: 10px;
+            padding: 10px;
+            width: 250px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.4s ease-in-out, max-height 0.4s ease-in-out;
+        }
 
-         .time-current, .time-duration { 
-             font-size: 0.8em; 
-             color: #ccc; 
-         } 
+        .playlist.expanded {
+            opacity: 1;
+            max-height: 300px;
+        }
 
-         /* Playlist */ 
-         .playlist { 
-             background: rgba(20, 1, 30, 0.95); 
-             border-radius: 12px; 
-             box-shadow: 0 0 15px #8a2be2; 
-             border: 2px solid #ffff33; 
-             margin-top: 10px; 
-             padding: 10px; 
-             width: 250px; 
-             opacity: 0; 
-             max-height: 0; 
-             overflow: hidden; 
-             transition: opacity 0.4s ease-in-out, max-height 0.4s ease-in-out; 
-         } 
+        .song-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
 
-         .playlist.expanded { 
-             opacity: 1; 
-             max-height: 300px; 
-         } 
+        .song-item:hover {
+            background-color: rgba(123, 44, 191, 0.2);
+        }
 
-         .song-item { 
-             display: flex; 
-             align-items: center; 
-             gap: 10px; 
-             padding: 8px; 
-             margin-bottom: 5px; 
-             border-radius: 8px; 
-             transition: background-color 0.2s; 
-         } 
+        .song-item-thumbnail {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+        }
 
-         .song-item:hover { 
-             background-color: rgba(138, 43, 226, 0.2); 
-         } 
+        .song-item-info {
+            text-align: left;
+        }
 
-         .song-item-thumbnail { 
-             width: 40px; 
-             height: 40px; 
-             border-radius: 4px; 
-             border: 1px solid #ffff33; /* Borde para las miniaturas */
-         } 
+        .song-item-info h4 {
+            margin: 0;
+            font-size: 0.9em;
+            color: #fff200;
+        }
 
-         .song-item-info { 
-             text-align: left; 
-         } 
+        .song-item-info p {
+            margin: 0;
+            font-size: 0.7em;
+            color: #ccc;
+        }
 
-         .song-item-info h4 { 
-             margin: 0; 
-             font-size: 0.9em; 
-             color: #ffff33; 
-             text-shadow: 0 0 3px #8a2be2; 
-         } 
+        .wip-item {
+            padding: 8px;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
 
-         .song-item-info p { 
-             margin: 0; 
-             font-size: 0.7em; 
-             color: #ccc; 
-         } 
+        /* Images */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
 
-         .wip-item { 
-             padding: 8px; 
-             text-align: center; 
-             color: #999; 
-             font-style: italic; 
-         } 
+        .side-img {
+            border-radius: 12px;
+            border: 3px solid #ffcc00;
+            box-shadow: 0 0 15px #ffcc00;
+            width: 200px;
+            height: auto;
+        }
 
-         /* Images */ 
-         .container { 
-             display: flex; 
-             justify-content: center; 
-             align-items: center; 
-             gap: 20px; 
-             flex-wrap: wrap; 
-             padding: 20px; 
-         } 
+        /* Enlace discreto */
+        footer a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <h1>FELI CUMPLE NEEEEEILLLLLLL</h1>
+    <p>
+        Holawas Neil ehhh, FELIZ CUMPLEAÑOS JAAJAJ, ojala estos dias te las pases hermoso, ehhh la verdad amo esta amistad, todo empezo en el server de wiwoo y
+        mandaste un manesaje lo de la Jam y tal sjsjj y pues fue raro pero estuvimos hablando y tal y pues formamos una amistad muy bonita y tal, y pues te agradezco 
+        que seas mi amigo y tal y que realmente significas mucho para mi y pues, se le ama mucho, espero sigas teniendo mas cumples y tal, quice hacerte una web medio simple
+        es lo que esta a mi alcanze de forma de regalo y tal, pero bueno, espero este dia te la pases bien, y coso, nos conocimos como en marzo y asi y buahh a pasado musho, ta potente
+        y pues esos, no se que mas decir, hare un preguntas y respuestas en en los dias siguientes, pq esta el tema de que un dia dijiste que encontraste un coso que usa lemon demon y
+        no se cual era, xd y me quede con la dua, pero bueno, esto lo hago a las 11:31 PM ehh esta relampageando y me voy a morir asi que ehhh sis, FELIZ CUMPLE NEIL TE QUIERO MUCHISIMO
+        EHH CHAUSSSS JAAJJA (lo mas probable es que estemos en llamada asi que nzi jsdjdj)
+    </p>
 
-         .side-img { 
-             border-radius: 12px; 
-             border: 3px solid #ffff33; /* Borde amarillo neón */ 
-             box-shadow: 0 0 15px #ffff33, 0 0 25px #8a2be2; /* Doble sombra neón */ 
-             width: 200px; 
-             height: auto; 
-         } 
-
-         /* Footer y enlaces */ 
-         .footer-container { 
-             display: flex; 
-             justify-content: center; 
-             align-items: center; 
-             gap: 40px; 
-             margin-top: 20px; 
-         } 
-         
-         .footer-link, .github-link { 
-             text-decoration: none; 
-             color: #ffff33; 
-             font-size: 1.2em; 
-             text-shadow: 0 0 5px #ffff33, 0 0 10px #8a2be2; 
-             padding: 10px 20px; 
-             border: 2px solid #ffff33; 
-             border-radius: 8px; 
-             transition: all 0.3s ease; 
-         } 
-         
-         .footer-link:hover, .github-link:hover { 
-             background-color: #8a2be2; 
-             color: #fff; 
-             box-shadow: 0 0 15px #8a2be2, 0 0 25px #ffff33; 
-         } 
-     </style> 
- </head> 
- <body> 
-     <h1>FELI CUMPLE NEEEEEILLLLLLL</h1> 
-     <p> 
-         Ojala cumplas mas años para seguir jugando pressure JADJADHJD, cuidate mushossssssssss. 
-     </p> 
-
-     <div class="player-wrapper"> 
-         <div class="player" id="player"> 
-             <audio id="audio" src="mus/Falling with you.mp3"></audio> 
-             <img class="player-thumbnail" src="mus/Falling with you.jpeg" alt="Portada de la canción" id="player-thumbnail"> 
-             <div class="player-info"> 
-                 <h3 id="song-title">Falling with you</h3> 
-                 <p id="song-artist">AJ DiSpirito</p> 
-             </div> 
-             <div class="player-controls"> 
-                 <button onclick="skipBack(5)">«</button> 
-                 <button id="playBtn" onclick="playAudio()">▶</button> 
-                 <button id="pauseBtn" style="display: none;" onclick="pauseAudio()">⏸</button> 
-                 <button onclick="skipForward(5)">»</button> 
-                 <button id="loopBtn" onclick="toggleLoop()">↻</button> 
-             </div> 
-             <div class="progress-container"> 
-                 <span class="time-current" id="currentTime">0:00</span> 
-                 <div class="progress-bar-wrapper"> 
-                     <div class="progress" id="progress"></div> 
-                 </div> 
-                 <span class="time-duration" id="duration">0:00</span> 
-             </div> 
-         </div> 
-         <div class="playlist" id="playlist"></div> 
-     </div> 
-
-     <div class="container"> 
-         <img src="fotoz1.jpg" alt="Foto lateral izquierda" class="side-img"> 
-     </div> 
-
-        <div class="footer-container">
-        <a href="mini-page.html" class="footer-link">I LOV YU N-IGGA</a>
+    <div class="player-wrapper">
+        <div class="player" id="player">
+            <audio id="audio" src="mus/Falling with you.mp3"></audio>
+            <img class="player-thumbnail" src="mus/Falling with you.jpeg" alt="Portada de la canción" id="player-thumbnail">
+            <div class="player-info">
+                <h3 id="song-title">Falling with you</h3>
+                <p id="song-artist">AJ DiSpirito</p>
+            </div>
+            <div class="player-controls">
+                <button onclick="skipBack(5)">«</button>
+                <button id="playBtn" onclick="playAudio()">▶</button>
+                <button id="pauseBtn" style="display: none;" onclick="pauseAudio()">⏸</button>
+                <button onclick="skipForward(5)">»</button>
+                <button id="loopBtn" onclick="toggleLoop()">↻</button>
+            </div>
+            <div class="progress-container">
+                <span class="time-current" id="currentTime">0:00</span>
+                <div class="progress-bar-wrapper">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <span class="time-duration" id="duration">0:00</span>
+            </div>
+        </div>
+        <div class="playlist" id="playlist"></div>
     </div>
-     <footer></footer>
-        <script> 
-         const audio = document.getElementById('audio'); 
-         const playerThumbnail = document.getElementById('player-thumbnail'); 
-         const songTitle = document.getElementById('song-title'); 
-         const songArtist = document.getElementById('song-artist'); 
-         const progress = document.getElementById('progress'); 
-         const currentTimeEl = document.getElementById('currentTime'); 
-         const durationEl = document.getElementById('duration'); 
-         const playBtn = document.getElementById('playBtn'); 
-         const pauseBtn = document.getElementById('pauseBtn'); 
-         const playlistEl = document.getElementById('playlist'); 
-         const playerWrapper = document.querySelector('.player-wrapper'); 
-         const loopBtn = document.getElementById('loopBtn'); 
-         const originalTitle = document.title; 
 
-         const playlist = [ 
-             { 
-                 title: 'Falling with you', 
-                 artist: 'AJ DiSpirito', 
-                 src: 'mus/Falling with you.mp3', 
-                 image: 'mus/Falling with you.jpeg' 
-             }, 
-             { 
-                 title: 'The HuMaN Gala', 
-                 artist: 'AJ DiSpirito', 
-                 src: 'mus/The HuMaN Gala.mp3', 
-                 image: 'mus/The HuMaN Gala.jpeg', 
-                 easterEgg: 'mus/The HuMaN Galap.jpeg' 
-             }, 
-             { 
-                 title: 'Waltz in E-Major, Op. 15 "Moon Waltz"', 
-                 artist: 'Cojum Dip', 
-                 src: 'mus/Waltz in E-Major, Op. 15 ＂Moon Waltz＂.mp3', 
-                 image: 'mus/Waltz in E-Major, Op. 15 ＂Moon Waltz＂.jpeg' 
-             }, 
-             { 
-                 title: 'No Eyed Girl', 
-                 artist: 'Lemon Demon', 
-                 src: 'mus/No Eyed Girl.mp3', 
-                 image: 'mus/SP.jpeg', 
-                 easterEgg: 'mus/NC.jpeg' 
-             }, 
-             { 
-                 title: 'Ancient Aliens', 
-                 artist: 'Lemon Demon', 
-                 src: 'mus/Ancient Aliens.mp3', 
-                 image: 'mus/SP.jpeg', 
-                 easterEgg: 'mus/NC.jpeg' 
-             } 
-         ]; 
+    <div class="container">
+        <img src="fotoz1.jpg" alt="Foto lateral izquierda" class="side-img">
+    </div>
 
-         let currentSongIndex = 0; 
-         let noEyedGirlEasterEggActive = false; 
-         let isLooping = false; 
+    <footer>
+        <a href="minicoso.html">I LOV YU N-IGGA</a>
+    </footer>
 
-         function loadSong(song) { 
-             audio.src = song.src; 
-             let imageSrc = song.image; 
+    <script>
+        const audio = document.getElementById('audio');
+        const playerThumbnail = document.getElementById('player-thumbnail');
+        const songTitle = document.getElementById('song-title');
+        const songArtist = document.getElementById('song-artist');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const playlistEl = document.getElementById('playlist');
+        const playerWrapper = document.querySelector('.player-wrapper');
+        const loopBtn = document.getElementById('loopBtn');
+        const originalTitle = document.title;
 
-             if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) { 
-                 imageSrc = song.easterEgg; 
-             } else if (song.title === 'The HuMaN Gala') { 
-                 imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image; 
-             } else { 
-                 imageSrc = song.image; 
-             } 
+        const playlist = [
+            {
+                title: 'Falling with you',
+                artist: 'AJ DiSpirito',
+                src: 'mus/Falling with you.mp3',
+                image: 'mus/Falling with you.jpeg'
+            },
+            {
+                title: 'The HuMaN Gala',
+                artist: 'AJ DiSpirito',
+                src: 'mus/The HuMaN Gala.mp3',
+                image: 'mus/The HuMaN Gala.jpeg',
+                easterEgg: 'mus/The HuMaN Galap.jpeg'
+            },
+            {
+                title: 'Waltz in E-Major, Op. 15 "Moon Waltz"',
+                artist: 'Cojum Dip',
+                src: 'mus/Waltz in E-Major, Op. 15 ＂Moon Waltz＂.mp3',
+                image: 'mus/Waltz in E-Major, Op. 15 ＂Moon Waltz＂.jpeg'
+            },
+            {
+                title: 'No Eyed Girl',
+                artist: 'Lemon Demon',
+                src: 'mus/No Eyed Girl.mp3',
+                image: 'mus/SP.jpeg',
+                easterEgg: 'mus/NC.jpeg'
+            },
+            {
+                title: 'Ancient Aliens',
+                artist: 'Lemon Demon',
+                src: 'mus/Ancient Aliens.mp3',
+                image: 'mus/SP.jpeg',
+                easterEgg: 'mus/NC.jpeg'
+            }
+        ];
 
-             playerThumbnail.src = imageSrc; 
-             songTitle.textContent = song.title; 
-             songArtist.textContent = song.artist; 
-             audio.load(); 
-             updateMediaSession(song); 
-         } 
+        let currentSongIndex = 0;
+        let noEyedGirlEasterEggActive = false;
+        let isLooping = false;
 
-         function playAudio() { 
-             if (audio.paused) { 
-                 audio.play(); 
-                 playBtn.style.display = 'none'; 
-                 pauseBtn.style.display = 'block'; 
-                 updateTitle(); 
-             } 
-         } 
+        function loadSong(song) {
+            audio.src = song.src;
+            let imageSrc = song.image;
 
-         function pauseAudio() { 
-             if (!audio.paused) { 
-                 audio.pause(); 
-                 playBtn.style.display = 'block'; 
-                 pauseBtn.style.display = 'none'; 
-                 document.title = originalTitle; 
-             } 
-         } 
-          
-         function skipBack(seconds) { 
-             audio.currentTime = Math.max(0, audio.currentTime - seconds); 
-         } 
-          
-         function skipForward(seconds) { 
-             audio.currentTime = Math.min(audio.duration, audio.currentTime + seconds); 
-         } 
-          
-         function toggleLoop() { 
-             isLooping = !isLooping; 
-             if (isLooping) { 
-                 loopBtn.classList.add('active'); 
-                 audio.loop = true; 
-             } else { 
-                 loopBtn.classList.remove('active'); 
-                 audio.loop = false; 
-             } 
-         } 
-          
-         function createPlaylist() { 
-             playlistEl.innerHTML = ''; 
-             noEyedGirlEasterEggActive = Math.random() < 0.1; 
+            if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) {
+                imageSrc = song.easterEgg;
+            } else if (song.title === 'The HuMaN Gala') {
+                imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image;
+            } else {
+                imageSrc = song.image;
+            }
 
-             playlist.forEach((song, index) => { 
-                 const songItem = document.createElement('div'); 
-                 songItem.classList.add('song-item'); 
-                 songItem.dataset.index = index; 
+            playerThumbnail.src = imageSrc;
+            songTitle.textContent = song.title;
+            songArtist.textContent = song.artist;
+            audio.load();
+            updateMediaSession(song);
+        }
 
-                 let imageSrc = song.image; 
-                 if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) { 
-                     imageSrc = song.easterEgg; 
-                 } else if (song.title === 'The HuMaN Gala') { 
-                     imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image; 
-                 } else { 
-                     imageSrc = song.image; 
-                 } 
+        function playAudio() {
+            if (audio.paused) {
+                audio.play();
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'block';
+                updateTitle();
+            }
+        }
 
-                 songItem.innerHTML = ` 
-                     <img class="song-item-thumbnail" src="${imageSrc}" alt="Portada"> 
-                     <div class="song-item-info"> 
-                         <h4>${song.title}</h4> 
-                         <p>${song.artist}</p> 
-                     </div> 
-                 `; 
-                 songItem.addEventListener('click', () => { 
-                     currentSongIndex = index; 
-                     loadSong(playlist[currentSongIndex]); 
-                     playAudio(); 
-                 }); 
-                 playlistEl.appendChild(songItem); 
-             }); 
+        function pauseAudio() {
+            if (!audio.paused) {
+                audio.pause();
+                playBtn.style.display = 'block';
+                pauseBtn.style.display = 'none';
+                document.title = originalTitle;
+            }
+        }
+        
+        function skipBack(seconds) {
+            audio.currentTime = Math.max(0, audio.currentTime - seconds);
+        }
+        
+        function skipForward(seconds) {
+            audio.currentTime = Math.min(audio.duration, audio.currentTime + seconds);
+        }
+        
+        function toggleLoop() {
+            isLooping = !isLooping;
+            if (isLooping) {
+                loopBtn.classList.add('active');
+                audio.loop = true;
+            } else {
+                loopBtn.classList.remove('active');
+                audio.loop = false;
+            }
+        }
+        
+        function createPlaylist() {
+            playlistEl.innerHTML = '';
+            noEyedGirlEasterEggActive = Math.random() < 0.1;
 
-             const wipItem = document.createElement('div'); 
-             wipItem.classList.add('wip-item'); 
-             wipItem.innerHTML = 'Añadir música (WIP)'; 
-             playlistEl.appendChild(wipItem); 
-         } 
+            playlist.forEach((song, index) => {
+                const songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+                songItem.dataset.index = index;
 
-         playerThumbnail.addEventListener('click', () => { 
-             playlistEl.classList.toggle('expanded'); 
-         }); 
+                let imageSrc = song.image;
+                if (song.easterEgg && (song.title === 'No Eyed Girl' || song.title === 'Ancient Aliens') && noEyedGirlEasterEggActive) {
+                    imageSrc = song.easterEgg;
+                } else if (song.title === 'The HuMaN Gala') {
+                    imageSrc = Math.random() < 0.1 ? song.easterEgg : song.image;
+                } else {
+                    imageSrc = song.image;
+                }
 
-         playerWrapper.addEventListener('mouseleave', () => { 
-             playlistEl.classList.remove('expanded'); 
-         }); 
+                songItem.innerHTML = `
+                    <img class="song-item-thumbnail" src="${imageSrc}" alt="Portada">
+                    <div class="song-item-info">
+                        <h4>${song.title}</h4>
+                        <p>${song.artist}</p>
+                    </div>
+                `;
+                songItem.addEventListener('click', () => {
+                    currentSongIndex = index;
+                    loadSong(playlist[currentSongIndex]);
+                    playAudio();
+                });
+                playlistEl.appendChild(songItem);
+            });
 
-         audio.addEventListener('loadedmetadata', () => { 
-             durationEl.textContent = formatTime(audio.duration); 
-         }); 
+            const wipItem = document.createElement('div');
+            wipItem.classList.add('wip-item');
+            wipItem.innerHTML = 'Añadir música (WIP)';
+            playlistEl.appendChild(wipItem);
+        }
 
-         audio.addEventListener('timeupdate', () => { 
-             const percent = (audio.currentTime / audio.duration) * 100; 
-             progress.style.width = percent + '%'; 
-             currentTimeEl.textContent = formatTime(audio.currentTime); 
-         }); 
+        playerThumbnail.addEventListener('click', () => {
+            playlistEl.classList.toggle('expanded');
+        });
 
-         audio.addEventListener('ended', () => { 
-             if (!isLooping) { 
-                 playBtn.style.display = 'block'; 
-                 pauseBtn.style.display = 'none'; 
-                 document.title = originalTitle; 
-             } 
-         }); 
-          
-         function formatTime(seconds) { 
-             if (isNaN(seconds)) return '0:00'; 
-             const minutes = Math.floor(seconds / 60); 
-             const secs = Math.floor(seconds % 60); 
-             return `${minutes}:${secs < 10 ? '0' : ''}${secs}`; 
-         } 
-          
-         function updateTitle() { 
-             document.title = `▶️ ${playlist[currentSongIndex].title} | FELI CUMPLEEEE`; 
-         } 
+        playerWrapper.addEventListener('mouseleave', () => {
+            playlistEl.classList.remove('expanded');
+        });
 
-         function updateMediaSession(song) { 
-             if ('mediaSession' in navigator) { 
-                 navigator.mediaSession.metadata = new MediaMetadata({ 
-                     title: song.title, 
-                     artist: song.artist, 
-                     album: 'Reproductor de cumpleaños', 
-                     artwork: [ 
-                         { src: song.image, sizes: '96x96', type: 'image/jpeg' }, 
-                         { src: song.image, sizes: '128x128', type: 'image/jpeg' }, 
-                         { src: song.image, sizes: '192x192', type: 'image/jpeg' }, 
-                         { src: song.image, sizes: '256x256', type: 'image/jpeg' }, 
-                         { src: song.image, sizes: '384x384', type: 'image/jpeg' }, 
-                         { src: song.image, sizes: '512x512', type: 'image/jpeg' }, 
-                     ] 
-                 }); 
+        audio.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audio.duration);
+        });
 
-                 navigator.mediaSession.setActionHandler('play', () => { 
-                     playAudio(); 
-                 }); 
-                 navigator.mediaSession.setActionHandler('pause', () => { 
-                     pauseAudio(); 
-                 }); 
-                 navigator.mediaSession.setActionHandler('seekbackward', (details) => { 
-                     skipBack(details.seekOffset || 10); 
-                 }); 
-                 navigator.mediaSession.setActionHandler('seekforward', (details) => { 
-                     skipForward(details.seekOffset || 10); 
-                 }); 
-                 navigator.mediaSession.setActionHandler('previoustrack', () => { 
-                     // Implementa la lógica para la canción anterior si es necesario 
-                 }); 
-                 navigator.mediaSession.setActionHandler('nexttrack', () => { 
-                     // Implementa la lógica para la siguiente canción si es necesario 
-                 }); 
-             } 
-         } 
+        audio.addEventListener('timeupdate', () => {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progress.style.width = percent + '%';
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        });
 
-         loadSong(playlist[currentSongIndex]); 
-         createPlaylist(); 
-     </script> 
- </body> 
- </html>
+        audio.addEventListener('ended', () => {
+            if (!isLooping) {
+                playBtn.style.display = 'block';
+                pauseBtn.style.display = 'none';
+                document.title = originalTitle;
+            }
+        });
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        function updateTitle() {
+            document.title = `▶️ ${playlist[currentSongIndex].title} | FELI CUMPLEEEE`;
+        }
+
+        function updateMediaSession(song) {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: song.title,
+                    artist: song.artist,
+                    album: 'Reproductor de cumpleaños',
+                    artwork: [
+                        { src: song.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: song.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: song.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: song.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: song.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: song.image, sizes: '512x512', type: 'image/jpeg' },
+                    ]
+                });
+
+                navigator.mediaSession.setActionHandler('play', () => {
+                    playAudio();
+                });
+                navigator.mediaSession.setActionHandler('pause', () => {
+                    pauseAudio();
+                });
+                navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+                    skipBack(details.seekOffset || 10);
+                });
+                navigator.mediaSession.setActionHandler('seekforward', (details) => {
+                    skipForward(details.seekOffset || 10);
+                });
+                navigator.mediaSession.setActionHandler('previoustrack', () => {
+                    
+                });
+                navigator.mediaSession.setActionHandler('nexttrack', () => {
+                    
+                });
+            }
+        }
+
+        loadSong(playlist[currentSongIndex]);
+        createPlaylist();
+    </script>
+</body>
+</html>
