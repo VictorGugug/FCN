@@ -263,6 +263,9 @@
         }
 
         /* Enlace discreto */
+        footer {
+            margin-top: 50px;
+        }
         footer a {
             text-decoration: none;
             color: inherit;
@@ -531,10 +534,10 @@
                     skipForward(details.seekOffset || 10);
                 });
                 navigator.mediaSession.setActionHandler('previoustrack', () => {
-                    
+                    // Implementa la lógica para la canción anterior si es necesario
                 });
                 navigator.mediaSession.setActionHandler('nexttrack', () => {
-                    
+                    // Implementa la lógica para la siguiente canción si es necesario
                 });
             }
         }
